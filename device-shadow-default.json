@@ -1,0 +1,16 @@
+{
+    "state": {
+        "desired": {
+            "temperatureHigh": 80 ,
+            "temperatureLow": 60,
+            "statusLedColor": "GREEN",
+			"doorLocked": true
+        },
+        "reported": {
+            "temperature": 73,
+            "statusLedColor": "GREEN",
+			"doorLocked": true,
+            "connected": true
+        }
+    }
+}
