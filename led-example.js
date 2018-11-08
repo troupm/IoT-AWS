@@ -11,6 +11,9 @@ led.mode('out');
 console.log("Swithing LED off...");
 led.value(false);
 
+console.log("Defining deviceModule...");
+var deviceModule = awsIot.device;
+
 //rpio.write(12, rpio.HIGH);
 var interval = setInterval(()=>
 {
@@ -21,16 +24,31 @@ var interval = setInterval(()=>
 , 500);
 setTimeout(()=>clearInterval(interval),10000);
 
+console.log("Defining AWS Device...");
+ 
+/*
+var device = deviceModule({
+    keyPath: "/home/pi/certs/AIL_IoT_RPi_01.private.key",
+    certPath: "/home/pi/certs/AIL_IoT_RPi_01.cert.pem",
+    caPath: "/home/pi/certs/root-CA.crt",
+    clientId: "AIL_IoT_RPi_01",
+    region: "us-east-1"
+});
+*/
+
 var device = awsIot.device({
-    keyPath: '/home/pi/certs/private.pem.key',
-    certPath: '/home/pi/certs/certificate.pem.crt',
-    caPath: '/home/pi/certs/caCert.crt',
+    keyPath: 'AIL_IoT_RPi_01.private.key',
+    certPath: 'AIL_IoT_RPi_01.cert.pem',
+    caPath: 'root-CA.crt',
     clientId: 'AIL_IoT_RPi_01',
+	port: 8883,
+	host: 'a3knx5ouu01ymf-ats.iot.us-east-1.amazonaws.com',
     region: 'us-east-1'
 });
 
-//var st = `${device} fkjholjflksdjf`;
 
+//var st = `${device} fkjholjflksdjf`;
+console.log("Subcribing to topic LED...");
 device.on('connect', function() {
     device.subscribe('LED');
 });
@@ -39,6 +57,7 @@ device.on('message', function(topic, payload)
 //(topic, payload)=>
 {
     console.log("Message received from Topic LED. Processing...");
+    console.log("Payload dump:");
     var payload = JSON.parse(payload.toString());
     //show the incoming message
     console.log(payload.light);
@@ -46,7 +65,7 @@ device.on('message', function(topic, payload)
     {
         if(payload.light == 'on')
         {
-            console.log("Swithing LED off...");
+            console.log("Swithing LED on...");
             led.value(true);
         } 
         else 
@@ -56,3 +75,4 @@ device.on('message', function(topic, payload)
         }
     }
 });
+
