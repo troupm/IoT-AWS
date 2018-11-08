@@ -1,4 +1,5 @@
 var awsIot = require('aws-iot-device-sdk');
+const thingHost = 'a3knx5ouu01ymf-ats.iot.us-east-1.amazonaws.com';
 
 //var rpio = require('rpio');
 var ledToggle = false;
@@ -25,29 +26,26 @@ var interval = setInterval(()=>
 setTimeout(()=>clearInterval(interval),10000);
 
 console.log("Defining AWS Device...");
- 
-/*
-var device = deviceModule({
-    keyPath: "/home/pi/certs/AIL_IoT_RPi_01.private.key",
-    certPath: "/home/pi/certs/AIL_IoT_RPi_01.cert.pem",
-    caPath: "/home/pi/certs/root-CA.crt",
-    clientId: "AIL_IoT_RPi_01",
-    region: "us-east-1"
-});
-*/
-
 var device = awsIot.device({
     keyPath: 'AIL_IoT_RPi_01.private.key',
     certPath: 'AIL_IoT_RPi_01.cert.pem',
     caPath: 'root-CA.crt',
     clientId: 'AIL_IoT_RPi_01',
 	port: 8883,
-	host: 'a3knx5ouu01ymf-ats.iot.us-east-1.amazonaws.com',
+	host: thingHost,
     region: 'us-east-1'
 });
 
+/*
+console.log("Defining AWS Thing Shadow...");
+var shadow = awsIot.IotData({endpoint: thingHost});
+console.log("Getting Thing Shadow from AWS...");
+shadow.getThingShadow(params, function (err, data) {
+  if (err) console.log(err, err.stack); // an error occurred
+  else     console.log(data);           // successful response
+});
+*/
 
-//var st = `${device} fkjholjflksdjf`;
 console.log("Subcribing to topic LED...");
 device.on('connect', function() {
     device.subscribe('LED');
