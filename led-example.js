@@ -1,17 +1,17 @@
 var awsIot = require('aws-iot-device-sdk');
-var rpio = require('rpio');
 
-rpio.open(12, rpio.OUTPUT, rpio.LOW);
+//var rpio = require('rpio');
+var ledToggle = false;
+var led= require("pi-pins").connect(12);
+led.mode('out');
 
+led.value(true);
 
 rpio.write(12, rpio.HIGH);
 var interval = setInterval(()=>
 {
-    if(rpio.read(12) == rpio.LOW){
-        rpio.write(12, rpio.HIGH);
-    } else {
-        rpio.write(12, rpio.LOW);
-    }
+    ledToggle = !ledToggle;
+    led.value(ledToggle);
 }
 , 500);
 setTimeout(()=>clearInterval(interval),10000);
@@ -31,6 +31,7 @@ device.on('connect', function() {
 });
 
 device.on('message', function(topic, payload) 
+//(topic, payload)=>
 {
     var payload = JSON.parse(payload.toString());
     //show the incoming message
@@ -39,11 +40,11 @@ device.on('message', function(topic, payload)
     {
         if(payload.light == 'on')
         {
-            rpio.write(12, rpio.HIGH);
+            led.value(true);
         } 
         else 
         {
-            rpio.write(12, rpio.LOW);
+            led.value(false);
         }
     }
 });
