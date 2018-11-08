@@ -2,6 +2,9 @@
   "dependencies": {
     "aws-sdk": "^2.349.0",
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "node-gyp": "^3.8.0",
+    "pi-pins": "^1.0.2",
+    "rpio": "^0.9.23"
   }
 }
