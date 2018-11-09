@@ -62,19 +62,15 @@ console.log("Initializing AWS Thing Shadow...");
 ShadowHelper.init(thingShadow);
 console.log("Registering AWS Thing Shadow...");
 // register
-ShadowHelper.registerThing(ThingName);
+await ShadowHelper.registerThingAsync(ThingName);
 
 // now you can listen to standard "delta" event for shadow updates
 
-console.log("Getting AWS Thing Shadow...");
-// get
-var myThing = ShadowHelper.getThing(ThingName);
-
 console.log("Getting Thing Shadow from AWS...");
-thingShadow.getThingShadow(params, function (err, data) {
-  if (err) console.log(err, err.stack); // an error occurred
-  else     console.log(data);           // successful response
-});
+// get
+var myThing = await ShadowHelper.getThingAsync(ThingName);
+console.log("Thing Shadow dump:");
+console.log(JSON.stringify(myThing));
 
 console.log("Subcribing to topic LED...");
 device.on('connect', function() {
