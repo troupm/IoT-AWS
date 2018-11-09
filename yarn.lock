@@ -70,6 +70,11 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
+aws-iot-shadow-helper@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/aws-iot-shadow-helper/-/aws-iot-shadow-helper-0.2.1.tgz#d22f53fd8ab028977258bf214415e9824619246d"
+  integrity sha1-0i9T/YqwKJdyWL8hRBXpgkYZJG0=
+
 aws-sdk@^2.349.0:
   version "2.349.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.349.0.tgz#8486ecacd5daf15db6fb37e37122a7836357a176"

@@ -1,5 +1,7 @@
 var awsIot = require('aws-iot-device-sdk');
+const ShadowHelper = require('aws-iot-shadow-helper');
 const thingHost = 'a3knx5ouu01ymf-ats.iot.us-east-1.amazonaws.com';
+
 
 //var rpio = require('rpio');
 var ledToggle = false;
@@ -39,7 +41,17 @@ var device = deviceModule({
 });
 
 console.log("Initializing AWS Thing Shadow...");
-var thingShadow = shadowModule({endpoint: thingHost});
+// see aws-iot-device-sdk for details about thingShadow setup
+const thingShadow = AWSIoT.thingShadow({
+  region: 'add-region-here',
+  clientId: 'test-client-id',
+  protocol: 'wss',
+  maximumReconnectTimeMs: 3000,
+  debug: true,
+  accessKeyId: '',
+  secretKey: '',
+  sessionToken: ''
+});
 
 console.log("Getting Thing Shadow from AWS...");
 thingShadow.getThingShadow(params, function (err, data) {
@@ -74,4 +86,5 @@ device.on('message', function(topic, payload)
         }
     }
 });
+
 
