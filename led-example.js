@@ -45,27 +45,30 @@ var device = deviceModule({
 
 console.log("Defining AWS Thing Shadow...");
 // see aws-iot-device-sdk for details about thingShadow setup
-const thingShadow = AWSIoT.thingShadow({
+const thingShadow = awsIot.thingShadow({
   region: Region,
   clientId: ThingName,
-  protocol: 'wss',
+  //protocol: 'wss',
   maximumReconnectTimeMs: 3000,
-  debug: true,
-  accessKeyId: '',
-  secretKey: '',
-  sessionToken: ''
+  keyPath: KeyPath,
+  certPath: CertPath,
+  caPath: CaPath,
+  clientId: ThingName,
+  port: Port, 
+  host: ThingHost,
+  region: Region
 });
 console.log("Initializing AWS Thing Shadow...");
 ShadowHelper.init(thingShadow);
 console.log("Registering AWS Thing Shadow...");
 // register
-await ShadowHelper.registerThingAsync(ThingName);
+ShadowHelper.registerThing(ThingName);
 
 // now you can listen to standard "delta" event for shadow updates
 
 console.log("Getting AWS Thing Shadow...");
 // get
-var myThing = await ShadowHelper.getThingAsync(ThingName).;
+var myThing = ShadowHelper.getThing(ThingName);
 
 console.log("Getting Thing Shadow from AWS...");
 thingShadow.getThingShadow(params, function (err, data) {
@@ -93,7 +96,7 @@ device.on('message', function(topic, payload)
             console.log("Swithing LED on...");
             led.value(true);
             // update shadow
-            await ShadowHelper.updateThingAsync(ThingName, {
+            ShadowHelper.updateThing(ThingName, {
                 state: {
                 reported: {
                     light: 'off'
@@ -105,7 +108,7 @@ device.on('message', function(topic, payload)
         {
             console.log("Swithing LED off...");
             led.value(false);
-            await ShadowHelper.updateThingAsync(ThingName, {
+            ShadowHelper.updateThing(ThingName, {
                 state: {
                 reported: {
                     light: 'on'
