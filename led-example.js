@@ -23,6 +23,7 @@ var deviceModule = awsIot.device;
 console.log("Defining AWS shadowModule...");
 var shadowModule = awsIot.IotData;
 
+/*
 var interval = setInterval(()=>
 {
     ledToggle = !ledToggle;
@@ -31,6 +32,7 @@ var interval = setInterval(()=>
 }
 , 500);
 setTimeout(()=>clearInterval(interval),10000);
+*/
 
 console.log("Initializing AWS Device...");
 var device = deviceModule({
@@ -98,10 +100,10 @@ device.on('message', function(topic, payload)
             ShadowHelper.updateThingAsync(ThingName, {
                 state: {
                 reported: {
-                    light: 'off'
+                    light: 'on'
                 }
                 }
-            });
+            }).then(()=>console.log("Thing Shadow Updated")).catch((err)=>console.error(err));
         } 
         else 
         {
@@ -110,10 +112,10 @@ device.on('message', function(topic, payload)
             ShadowHelper.updateThingAsync(ThingName, {
                 state: {
                 reported: {
-                    light: 'on'
+                    light: 'off'
                 }
                 }
-            });
+            }).then(()=>console.log("Thing Shadow Updated")).catch((err)=>console.error(err));
         }
     }
 });
