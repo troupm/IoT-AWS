@@ -62,19 +62,22 @@ console.log("Initializing AWS Thing Shadow...");
 ShadowHelper.init(thingShadow);
 console.log("Registering AWS Thing Shadow...");
 // register
-await ShadowHelper.registerThingAsync(ThingName);
+
+ShadowHelper.registerThingAsync(ThingName).then(()=>{
+console.log("Sucess");
+ShadowHelper.getThingAsync(ThingName).then((r)=>console.log(JSON.stringify(r)));
+}).catch((err)=>console.error(err));
 
 // now you can listen to standard "delta" event for shadow updates
 
 console.log("Getting Thing Shadow from AWS...");
 // get
-var myThing = await ShadowHelper.getThingAsync(ThingName);
-console.log("Thing Shadow dump:");
-console.log(JSON.stringify(myThing));
+
 
 console.log("Subcribing to topic LED...");
 device.on('connect', function() {
     device.subscribe('LED');
+    
 });
 
 device.on('message', function(topic, payload) 
@@ -92,7 +95,7 @@ device.on('message', function(topic, payload)
             console.log("Swithing LED on...");
             led.value(true);
             // update shadow
-            ShadowHelper.updateThing(ThingName, {
+            ShadowHelper.updateThingAsync(ThingName, {
                 state: {
                 reported: {
                     light: 'off'
@@ -104,7 +107,7 @@ device.on('message', function(topic, payload)
         {
             console.log("Swithing LED off...");
             led.value(false);
-            ShadowHelper.updateThing(ThingName, {
+            ShadowHelper.updateThingAsync(ThingName, {
                 state: {
                 reported: {
                     light: 'on'
