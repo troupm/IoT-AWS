@@ -1,9 +1,13 @@
-var awsIot = require('aws-iot-device-sdk');
+const awsIot = require('aws-iot-device-sdk');
 const ShadowHelper = require('aws-iot-shadow-helper');
-const thingHost = 'a3knx5ouu01ymf-ats.iot.us-east-1.amazonaws.com';
+const ThingHost = 'a3knx5ouu01ymf-ats.iot.us-east-1.amazonaws.com';
+const KeyPath = 'AIL_IoT_RPi_01.private.key';
+const CertPath = 'AIL_IoT_RPi_01.cert.pem';
+const CaPath = 'root-CA.crt';
+const ThingName = 'AIL_IoT_RPi_01';
+const Port = 8883;
+const Region = 'us-east-1';
 
-
-//var rpio = require('rpio');
 var ledToggle = false;
 console.log("Defining GPIO...");
 var GPIO = require("pi-pins");
@@ -19,7 +23,6 @@ var deviceModule = awsIot.device;
 console.log("Defining AWS shadowModule...");
 var shadowModule = awsIot.IotData;
 
-//rpio.write(12, rpio.HIGH);
 var interval = setInterval(()=>
 {
     ledToggle = !ledToggle;
@@ -31,20 +34,20 @@ setTimeout(()=>clearInterval(interval),10000);
 
 console.log("Initializing AWS Device...");
 var device = deviceModule({
-    keyPath: 'AIL_IoT_RPi_01.private.key',
-    certPath: 'AIL_IoT_RPi_01.cert.pem',
-    caPath: 'root-CA.crt',
-    clientId: 'AIL_IoT_RPi_01',
-	port: 8883,
-	host: thingHost,
-    region: 'us-east-1'
+    keyPath: KeyPath,
+    certPath: CertPath,
+    caPath: CaPath,
+    clientId: ThingName,
+	port: Port,
+	host: ThingHost,
+    region: Region
 });
 
-console.log("Initializing AWS Thing Shadow...");
+console.log("Defining AWS Thing Shadow...");
 // see aws-iot-device-sdk for details about thingShadow setup
 const thingShadow = AWSIoT.thingShadow({
-  region: 'add-region-here',
-  clientId: 'test-client-id',
+  region: Region,
+  clientId: ThingName,
   protocol: 'wss',
   maximumReconnectTimeMs: 3000,
   debug: true,
@@ -52,6 +55,17 @@ const thingShadow = AWSIoT.thingShadow({
   secretKey: '',
   sessionToken: ''
 });
+console.log("Initializing AWS Thing Shadow...");
+ShadowHelper.init(thingShadow);
+console.log("Registering AWS Thing Shadow...");
+// register
+await ShadowHelper.registerThingAsync(ThingName);
+
+// now you can listen to standard "delta" event for shadow updates
+
+console.log("Getting AWS Thing Shadow...");
+// get
+var myThing = await ShadowHelper.getThingAsync(ThingName).;
 
 console.log("Getting Thing Shadow from AWS...");
 thingShadow.getThingShadow(params, function (err, data) {
@@ -78,11 +92,26 @@ device.on('message', function(topic, payload)
         {
             console.log("Swithing LED on...");
             led.value(true);
+            // update shadow
+            await ShadowHelper.updateThingAsync(ThingName, {
+                state: {
+                reported: {
+                    light: 'off'
+                }
+                }
+            });
         } 
         else 
         {
             console.log("Swithing LED off...");
             led.value(false);
+            await ShadowHelper.updateThingAsync(ThingName, {
+                state: {
+                reported: {
+                    light: 'on'
+                }
+                }
+            });
         }
     }
 });
