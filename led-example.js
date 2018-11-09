@@ -79,7 +79,7 @@ console.log("Getting Thing Shadow from AWS...");
 console.log("Subcribing to topic LED...");
 device.on('connect', function() {
     device.subscribe('LED');
-    
+    device.subscribe(`aws/things/${ThingName}/shadow/update/delta`);
 });
 
 device.on('message', function(topic, payload) 
@@ -90,6 +90,34 @@ device.on('message', function(topic, payload)
     var payload = JSON.parse(payload.toString());
     //show the incoming message
     console.log(payload.light);
+    if(topic == `aws/things/${ThingName}/shadow/update/delta`)
+    {
+        if(payload.desired && payload.desired.light === 'on')
+        {
+            console.log("Swithing LED on...");
+            led.value(true);
+            // update shadow
+            ShadowHelper.updateThingAsync(ThingName, {
+                state: {
+                reported: {
+                    light: 'on'
+                }
+                }
+            }).then(()=>console.log("Thing Shadow Updated")).catch((err)=>console.error(err));
+        } 
+        else if (payload.desired && payload.desired.light == 'off')
+        {
+            console.log("Swithing LED off...");
+            led.value(false);
+            ShadowHelper.updateThingAsync(ThingName, {
+                state: {
+                reported: {
+                    light: 'off'
+                }
+                }
+            }).then(()=>console.log("Thing Shadow Updated")).catch((err)=>console.error(err));
+        }
+    }
     if(topic == 'LED')
     {
         if(payload.light == 'on')
