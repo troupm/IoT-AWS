@@ -1,5 +1,4 @@
 const awsIot = require('aws-iot-device-sdk');
-const ShadowHelper = require('aws-iot-shadow-helper');
 const ThingHost = 'a3knx5ouu01ymf-ats.iot.us-east-1.amazonaws.com';
 const KeyPath = 'AIL_IoT_RPi_01.private.key';
 const CertPath = 'AIL_IoT_RPi_01.cert.pem';
@@ -60,30 +59,17 @@ const thingShadow = awsIot.thingShadow({
   host: ThingHost,
   region: Region
 });
-console.log("Initializing AWS Thing Shadow...");
-ShadowHelper.init(thingShadow);
-console.log("Registering AWS Thing Shadow...");
-// register
 
-ShadowHelper.registerThingAsync(ThingName).then(()=>{
-console.log("Sucess");
-ShadowHelper.getThingAsync(ThingName).then((r)=>console.log(JSON.stringify(r)));
-}).catch((err)=>console.error(err));
-
-// now you can listen to standard "delta" event for shadow updates
-
-console.log("Getting Thing Shadow from AWS...");
-// get
-
-
-console.log("Subcribing to topic LED...");
 device.on('connect', function() {
+    console.log("Subcribing to topic LED...");
     device.subscribe('LED');
+    console.log("Subcribing to topic Delta...");
     device.subscribe(`aws/things/${ThingName}/shadow/update/delta`);
+    console.log("Registering AWS Thing Shadow...");
+    thingShadow.register(ThingName);
 });
 
 device.on('message', function(topic, payload) 
-//(topic, payload)=>
 {
     console.log("Message received from Topic LED. Processing...");
     console.log("Payload dump:");
@@ -92,30 +78,32 @@ device.on('message', function(topic, payload)
     console.log(payload.light);
     if(topic == `aws/things/${ThingName}/shadow/update/delta`)
     {
-        if(payload.desired && payload.desired.light === 'on')
+        if(payload.delta && payload.delta.light === 'on')
         {
             console.log("Swithing LED on...");
             led.value(true);
             // update shadow
-            ShadowHelper.updateThingAsync(ThingName, {
+            thingShadow.update(ThingName, {
                 state: {
                 reported: {
                     light: 'on'
                 }
                 }
-            }).then(()=>console.log("Thing Shadow Updated")).catch((err)=>console.error(err));
+            })
+            console.log("Thing Shadow Updated");
         } 
-        else if (payload.desired && payload.desired.light == 'off')
+        else if (payload.delta && payload.delta.light == 'off')
         {
             console.log("Swithing LED off...");
             led.value(false);
-            ShadowHelper.updateThingAsync(ThingName, {
+            thingShadow.update(ThingName, {
                 state: {
                 reported: {
                     light: 'off'
                 }
                 }
-            }).then(()=>console.log("Thing Shadow Updated")).catch((err)=>console.error(err));
+            })
+            console.log("Thing Shadow Updated");
         }
     }
     if(topic == 'LED')
@@ -125,25 +113,27 @@ device.on('message', function(topic, payload)
             console.log("Swithing LED on...");
             led.value(true);
             // update shadow
-            ShadowHelper.updateThingAsync(ThingName, {
+            thingShadow.update(ThingName, {
                 state: {
                 reported: {
                     light: 'on'
                 }
                 }
-            }).then(()=>console.log("Thing Shadow Updated")).catch((err)=>console.error(err));
+            })
+            console.log("Thing Shadow Updated");
         } 
         else 
         {
             console.log("Swithing LED off...");
             led.value(false);
-            ShadowHelper.updateThingAsync(ThingName, {
+            thingShadow.update(ThingName, {
                 state: {
                 reported: {
                     light: 'off'
                 }
                 }
-            }).then(()=>console.log("Thing Shadow Updated")).catch((err)=>console.error(err));
+            });
+            console.log("Thing Shadow Updated");
         }
     }
 });
