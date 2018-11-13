@@ -79,6 +79,14 @@ else{
 }
 });
 
+device.on('offline', function () {
+    console.log("MQTT offline");
+});
+ 
+device.on('reconnect', function () {
+    console.log("MQTT reconnecting");
+});
+
 device.on('message', function(topic, payload) 
 {
     console.log("Message received from Topic LED. Processing...");
