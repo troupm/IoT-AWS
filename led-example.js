@@ -64,6 +64,7 @@ const thingShadow = awsIot.thingShadow({
 device.on('connect', function() {
 if(!connected)
 {
+    console.log("OnConnect event: ** CONNECTING... **");
     console.log("Subcribing to topic LED...");
     device.subscribe('LED');
     console.log("Subcribing to topic Delta...");
@@ -71,6 +72,10 @@ if(!connected)
     console.log("Registering AWS Thing Shadow...");
     thingShadow.register(ThingName);
     connected = true;
+    console.log("** CONNECTED **");
+}
+else{
+    console.log("OnConnect event: already connected.");
 }
 });
 
