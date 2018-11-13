@@ -4,7 +4,8 @@ const ThingHost = 'a3knx5ouu01ymf-ats.iot.us-east-1.amazonaws.com';
 const KeyPath = 'AIL_IoT_RPi_01.private.key';
 const CertPath = 'AIL_IoT_RPi_01.cert.pem';
 const CaPath = 'root-CA.crt';
-const ThingName = `AIL_IoT_RPi_01${uuid.v4()}`;
+//const ThingName = `AIL_IoT_RPi_01${uuid.v4()}`;
+const ThingName = `AIL_IoT_RPi_01`;
 const Port = 8883;
 const Region = 'us-east-1';
 
