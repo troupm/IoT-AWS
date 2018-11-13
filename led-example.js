@@ -54,7 +54,7 @@ const thingShadow = awsIot.thingShadow({
   clientId: ThingName,
   //protocol: 'wss',
   maximumReconnectTimeMs: 3000,
-  operationTimeout: 30000,
+//   operationTimeout: 30000,
   keyPath: KeyPath,
   certPath: CertPath,
   caPath: CaPath,
