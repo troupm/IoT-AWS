@@ -52,7 +52,7 @@ console.log("Defining AWS Thing Shadow...");
 const thingShadow = awsIot.thingShadow({
   region: Region,
   clientId: ThingName,
-  protocol: 'wss',
+  //protocol: 'wss',
   maximumReconnectTimeMs: 3000,
   operationTimeout: 30000,
   keyPath: KeyPath,
