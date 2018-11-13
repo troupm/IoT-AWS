@@ -8,6 +8,7 @@ const Port = 8883;
 const Region = 'us-east-1';
 
 var ledToggle = false;
+var connected = false;
 console.log("Defining GPIO...");
 var GPIO = require("pi-pins");
 console.log("Attaching LED Pin...");
@@ -61,12 +62,16 @@ const thingShadow = awsIot.thingShadow({
 });
 
 device.on('connect', function() {
+if(!connected)
+{
     console.log("Subcribing to topic LED...");
     device.subscribe('LED');
     console.log("Subcribing to topic Delta...");
     device.subscribe(`aws/things/${ThingName}/shadow/update/delta`);
     console.log("Registering AWS Thing Shadow...");
     thingShadow.register(ThingName);
+    connected = true;
+}
 });
 
 device.on('message', function(topic, payload) 
@@ -91,6 +96,7 @@ device.on('message', function(topic, payload)
                 }
             })
             console.log("Thing Shadow Updated");
+            console.log(thingShadow);
         } 
         else if (payload.delta && payload.delta.light == 'off')
         {
@@ -104,6 +110,7 @@ device.on('message', function(topic, payload)
                 }
             })
             console.log("Thing Shadow Updated");
+            console.log(thingShadow);
         }
     }
     if(topic == 'LED')
@@ -121,6 +128,7 @@ device.on('message', function(topic, payload)
                 }
             })
             console.log("Thing Shadow Updated");
+            console.log(thingShadow);
         } 
         else 
         {
@@ -134,6 +142,7 @@ device.on('message', function(topic, payload)
                 }
             });
             console.log("Thing Shadow Updated");
+            console.log(thingShadow);
         }
     }
 });

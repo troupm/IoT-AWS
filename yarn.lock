@@ -1135,3 +1135,8 @@ xmlbuilder@~9.0.1:
   version "9.0.7"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.7.tgz#132ee63d2ec5565c557e20f4c22df9aca686b10d"
   integrity sha1-Ey7mPS7FVlxVfiD0wi35rKaGsQ0=
+
+yarn@^1.12.3:
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.12.3.tgz#fb4599bf1f8da01552bcc7e1571dfd4e53788203"
+  integrity sha512-8f5rWNDvkhAmCxmn8C0LsNWMxTYVk4VGKiq0sIB6HGZjaZTHsGIH87SUmVDUEd2Wk54bqKoUlbVWgQFCQhRkVw==
