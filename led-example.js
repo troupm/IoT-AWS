@@ -23,8 +23,9 @@ led.value(false);
 
 console.log("Defining deviceModule...");
 var deviceModule = awsIot.device;
-console.log("Defining AWS shadowModule...");
-var shadowModule = awsIot.IotData;
+
+// console.log("Defining AWS shadowModule...");
+// var shadowModule = awsIot.IotData;
 
 /*
 var interval = setInterval(()=>
@@ -76,7 +77,9 @@ if(!connected)
     console.log("Subcribing to topic Delta...");
     device.subscribe(`aws/things/${ThingName}/shadow/update/delta`);
     console.log("Registering AWS Thing Shadow...");
-    thingShadow.register(ThingName);
+    thingShadow.register(ThingName, {
+        persistentSubscribe: true
+     });
     connected = true;
     console.log("** CONNECTED **");
 }
