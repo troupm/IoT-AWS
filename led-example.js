@@ -42,7 +42,9 @@ var device = deviceModule({
     clientId: ThingName,
 	port: Port,
 	host: ThingHost,
-    region: Region
+    region: Region,
+    offlineQueueing: true,
+    autoResubscribe: true
 });
 
 console.log("Defining AWS Thing Shadow...");
@@ -50,8 +52,9 @@ console.log("Defining AWS Thing Shadow...");
 const thingShadow = awsIot.thingShadow({
   region: Region,
   clientId: ThingName,
-  //protocol: 'wss',
+  protocol: 'wss',
   maximumReconnectTimeMs: 3000,
+  operationTimeout: 30000,
   keyPath: KeyPath,
   certPath: CertPath,
   caPath: CaPath,
@@ -85,6 +88,10 @@ device.on('offline', function () {
  
 device.on('reconnect', function () {
     console.log("MQTT reconnecting");
+});
+
+device.on('close', function () {
+    console.log("MQTT closed");
 });
 
 device.on('message', function(topic, payload) 
