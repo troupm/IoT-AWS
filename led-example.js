@@ -210,8 +210,8 @@ device.on('message', function(topic, payload)
     {
         if(payload.light == 'on')
         {
-            console.log("Swithing LED on...");
-            led.value(true);
+            console.log("Changing desired LED state to on...");
+            //led.value(true);
             // update shadow
             thingShadow.update(ThingName, {
                 state: {
@@ -228,8 +228,8 @@ device.on('message', function(topic, payload)
         } 
         else 
         {
-            console.log("Swithing LED off...");
-            led.value(false);
+            console.log("Changing desired LED state to off...");
+            //led.value(false);
             thingShadow.update(ThingName, {
                 state: {
                 // reported: {
