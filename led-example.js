@@ -45,20 +45,6 @@ led.value(false);
 console.log("Defining deviceModule...");
 var deviceModule = awsIot.device;
 
-// console.log("Defining AWS shadowModule...");
-// var shadowModule = awsIot.IotData;
-
-/*
-var interval = setInterval(()=>
-{
-    ledToggle = !ledToggle;
-    console.log("Changing LED state...");
-    led.value(ledToggle);
-}
-, 500);
-setTimeout(()=>clearInterval(interval),10000);
-*/
-
 console.log("Initializing AWS Device...");
 var device = deviceModule({
     keyPath: KeyPath,
@@ -220,52 +206,6 @@ device.on('message', function(topic, payload)
     var payload = JSON.parse(payload.toString());
     //show the incoming message
     console.log(payload.light);
-
-    // if(topic == `aws/things/${ThingName}/shadow/update/delta`)
-    // {
-    //     if(payload.delta && payload.delta.light === 'on')
-    //     {
-    //         console.log("Swithing LED on...");
-    //         led.value(true);
-    //         // update shadow
-    //         thingShadow.update(ThingName, {
-    //             state: {
-    //                 reported: {
-    //                     light: 'on'
-    //                 },
-    //                 // reported: {
-    //                 //     light: 'off'
-    //                 // },
-    //                 desired: {
-    //                     light: 'on'
-    //                 }
-    //             }
-    //         })
-    //         console.log("Thing Shadow Updated");
-    //         console.log(thingShadow);
-    //     } 
-    //     else if (payload.delta && payload.delta.light == 'off')
-    //     {
-    //         console.log("Swithing LED off...");
-    //         led.value(false);
-    //         thingShadow.update(ThingName, {
-    //             state: {
-    //                 reported: {
-    //                     light: 'off'
-    //                 },
-    //                 // reported: {
-    //                 //     light: 'off'
-    //                 // },
-    //                 desired: {
-    //                     light: 'off'
-    //                 }
-    //             }
-    //         })
-    //         console.log("Thing Shadow Updated");
-    //         console.log(thingShadow);
-    //     }
-    // }
-
     if(topic == 'LED')
     {
         if(payload.light == 'on')
