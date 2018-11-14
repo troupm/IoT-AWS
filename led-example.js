@@ -174,6 +174,35 @@ thingShadow.on('connect', function() {
         function(thingName, stateObject) {
         console.log('received delta on '+thingName+': '+
                     JSON.stringify(stateObject));
+        if(stateObject.state && stateObject.state.light === 'on')
+        {
+            console.log("Swithing LED on...");
+            led.value(true);
+            // update shadow
+            thingShadow.update(ThingName, {
+                state: {
+                reported: {
+                    light: 'on'
+                }
+                }
+            })
+            console.log("Thing Shadow Updated");
+            console.log(thingShadow);
+        } 
+        if(stateObject.state && stateObject.state.light === 'off')
+        {
+            console.log("Swithing LED off...");
+            led.value(false);
+            thingShadow.update(ThingName, {
+                state: {
+                reported: {
+                    light: 'off'
+                }
+                }
+            })
+            console.log("Thing Shadow Updated");
+            console.log(thingShadow);
+        }
         });
 
     thingShadow.on('timeout',
