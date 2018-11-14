@@ -170,13 +170,11 @@ thingShadow.on('connect', function() {
                 state: {
                     reported: {
                         light: 'on'
-                    },
-                    // reported: {
-                    //     light: 'off'
-                    // },
-                    desired: {
-                        light: 'on'
                     }
+                    // ,
+                    // desired: {
+                    //     light: 'on'
+                    // }
                 }
             })
             console.log("Thing Shadow Updated");
@@ -190,13 +188,11 @@ thingShadow.on('connect', function() {
                 state: {
                     reported: {
                         light: 'off'
-                    },
-                    // reported: {
-                    //     light: 'off'
-                    // },
-                    desired: {
-                        light: 'off'
                     }
+                    // ,
+                    // desired: {
+                    //     light: 'off'
+                    // }
                 }
             })
             console.log("Thing Shadow Updated");
