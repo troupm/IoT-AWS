@@ -15,12 +15,18 @@ var ledToggle = false;
 var connected = false;
 console.log("Defining GPIO...");
 var GPIO = require("pi-pins");
-console.log("Attaching LED Pin...");
-var led= GPIO.connect(12);
+
+// BUTTONS
+/*
 var onButton= GPIO.connect(17);
 onButton.mode('in');
 var offButton= GPIO.connect(18);
 offButton.mode('in');
+*/
+
+// LEDs
+console.log("Attaching LED Pin...");
+var led= GPIO.connect(12);
 console.log("Setting LED mode...");
 led.mode('out');
 console.log("Swithing LED off...");
