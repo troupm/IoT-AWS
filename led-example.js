@@ -211,13 +211,13 @@ device.on('message', function(topic, payload)
         if(payload.light == 'on')
         {
             console.log("Changing desired LED state to on...");
-            //led.value(true);
+            led.value(true);
             // update shadow
             thingShadow.update(ThingName, {
                 state: {
-                // reported: {
-                //     light: 'on'
-                // },
+                reported: {
+                    light: 'on'
+                },
                 desired: {
                     light: 'on'
                 }
@@ -229,12 +229,12 @@ device.on('message', function(topic, payload)
         else 
         {
             console.log("Changing desired LED state to off...");
-            //led.value(false);
+            led.value(false);
             thingShadow.update(ThingName, {
                 state: {
-                // reported: {
-                //     light: 'off'
-                // },
+                reported: {
+                    light: 'off'
+                },
                 desired: {
                     light: 'off'
                 }
