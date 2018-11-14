@@ -167,7 +167,7 @@ thingShadow.on('connect', function() {
             led.value(true);
             // update shadow
             thingShadow.update(ThingName, {
-                reported: {
+                state: {
                     light: 'on'
                 }
             })
@@ -179,7 +179,7 @@ thingShadow.on('connect', function() {
             console.log("Swithing LED off...");
             led.value(false);
             thingShadow.update(ThingName, {
-                reported: {
+                state: {
                     light: 'off'
                 }
             })
