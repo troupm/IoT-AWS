@@ -5,6 +5,7 @@ const KeyPath = 'AIL_IoT_RPi_01.private.key';
 const CertPath = 'AIL_IoT_RPi_01.cert.pem';
 const CaPath = 'root-CA.crt';
 //const ThingName = `AIL_IoT_RPi_01${uuid.v4()}`;
+const ClientToken = uuid.v4().toString();
 const ThingName = `AIL_IoT_RPi_01`;
 const Port = 8883;
 const Region = 'us-east-1';
@@ -69,27 +70,27 @@ const thingShadow = awsIot.thingShadow({
   clientId: ThingName,
   port: Port, 
   host: ThingHost,
-  region: Region
+  region: Region, 
 });
 
 device.on('connect', function() {
-if(!connected)
-{
-    console.log("OnConnect event: ** CONNECTING... **");
-    console.log("Subcribing to topic LED...");
-    device.subscribe('LED');
-    console.log("Subcribing to topic Delta...");
-    device.subscribe(`aws/things/${ThingName}/shadow/update/delta`);
-    console.log("Registering AWS Thing Shadow...");
-    thingShadow.register(ThingName, {
-        persistentSubscribe: true
-     });
-    connected = true;
-    console.log("** CONNECTED **");
-}
-else{
-    console.log("OnConnect event: already connected.");
-}
+    if(!connected)
+    {
+        console.log("OnConnect event: ** CONNECTING... **");
+        console.log("Subcribing to topic LED...");
+        device.subscribe('LED');
+        console.log("Subcribing to topic Delta...");
+        device.subscribe(`aws/things/${ThingName}/shadow/update/delta`);
+        console.log("Registering AWS Thing Shadow...");
+        thingShadow.register(ThingName, {
+            persistentSubscribe: true
+        });
+        connected = true;
+        console.log("** CONNECTED **");
+    }
+    else{
+        console.log("OnConnect event: already connected.");
+    }
 });
 
 device.on('offline', function () {
@@ -113,6 +114,74 @@ offButton.on('rise', function () {
     console.log("OFF button pressed-- publishing light:off message to topic LED with QOS=1");
     console.log("TODO: Publish MQTT Message here");
 });
+
+// SHADOW EVENTS
+
+thingShadow.on('connect', function() {
+    //
+    // After connecting to the AWS IoT platform, register interest in the
+    // Thing Shadow named 'RGBLedLamp'.
+    //
+    thingShadow.register( ThingName, {}, function() {
+        console.log('thingShadow.register : Registering...');
+    // Once registration is complete, update the Thing Shadow named
+    // 'RGBLedLamp' with the latest device state and save the clientToken
+    // so that we can correlate it with status or timeout events.
+    //
+    // Thing shadow state
+    //
+           var ledState = {"state":{"desired":{"light":"on"}}};
+    
+           clientTokenUpdate = thingShadow.update(ThingName, ledState  );
+    //
+    // The update method returns a clientToken; if non-null, this value will
+    // be sent in a 'status' event when the operation completes, allowing you
+    // to know whether or not the update was successful.  If the update method
+    // returns null, it's because another operation is currently in progress and
+    // you'll need to wait until it completes (or times out) before updating the 
+    // shadow.
+    //
+           if (clientTokenUpdate === null)
+           {
+              console.log('update shadow failed, operation still in progress');
+           }
+           else{
+            console.log('thingShadow.register : thingShadow registered sucessully.');
+           }
+        });
+    });
+
+    thingShadow.on('status', 
+    function(thingName, stat, clientToken, stateObject) {
+       console.log('received '+stat+' on '+thingName+': '+
+                   JSON.stringify(stateObject));
+    //
+    // These events report the status of update(), get(), and delete() 
+    // calls.  The clientToken value associated with the event will have
+    // the same value which was returned in an earlier call to get(),
+    // update(), or delete().  Use status events to keep track of the
+    // status of shadow operations.
+    //
+    });
+
+    thingShadow.on('delta', 
+        function(thingName, stateObject) {
+        console.log('received delta on '+thingName+': '+
+                    JSON.stringify(stateObject));
+        });
+
+    thingShadow.on('timeout',
+        function(thingName, clientToken) {
+        console.log('received timeout on '+thingName+
+                    ' with token: '+ clientToken);
+    //
+    // In the event that a shadow operation times out, you'll receive
+    // one of these events.  The clientToken value associated with the
+    // event will have the same value which was returned in an earlier
+    // call to get(), update(), or delete().
+    });
+
+// DEVICE EVENTS
 
 device.on('message', function(topic, payload) 
 {
