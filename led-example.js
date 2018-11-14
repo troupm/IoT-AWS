@@ -59,11 +59,12 @@ onButton.on('rise', function () {
     console.log("ON button pressed-- publishing light:on message to topic LED with QOS=1");
     console.log("TODO: Publish MQTT Message here");
     thingShadow.update(ThingName, {
-    state: {
-        desired: {
-            light: 'on'
+        state: {
+            desired: {
+                light: 'on'
+            }
         }
-    }
+    })
 });
 
 offButton.on('rise', function () {
