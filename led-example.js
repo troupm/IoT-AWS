@@ -270,6 +270,9 @@ device.on('message', function(topic, payload)
                 state: {
                 reported: {
                     light: 'on'
+                },
+                desired: {
+                    light: 'on'
                 }
                 }
             })
@@ -283,6 +286,9 @@ device.on('message', function(topic, payload)
             thingShadow.update(ThingName, {
                 state: {
                 reported: {
+                    light: 'off'
+                },
+                desired: {
                     light: 'off'
                 }
                 }
