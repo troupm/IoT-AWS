@@ -8,7 +8,7 @@ const CaPath = 'root-CA.crt';
 const ThingName = `AIL_IoT_RPi_01`;
 const Port = 8883;
 const Region = 'us-east-1';
-
+const pressCount= 0;
 
 var ledToggle = false;
 var connected = false;
@@ -16,6 +16,10 @@ console.log("Defining GPIO...");
 var GPIO = require("pi-pins");
 console.log("Attaching LED Pin...");
 var led= GPIO.connect(12);
+var onButton= GPIO.connect(17);
+onButton.mode('in');
+var offButton= GPIO.connect(18);
+offButton.mode('in');
 console.log("Setting LED mode...");
 led.mode('out');
 console.log("Swithing LED off...");
@@ -98,6 +102,16 @@ device.on('reconnect', function () {
 
 device.on('close', function () {
     console.log("MQTT closed");
+});
+
+onButton.on('rise', function () {
+    console.log("ON button pressed-- publishing light:on message to topic LED with QOS=1");
+    console.log("TODO: Publish MQTT Message here");
+});
+
+offButton.on('rise', function () {
+    console.log("OFF button pressed-- publishing light:off message to topic LED with QOS=1");
+    console.log("TODO: Publish MQTT Message here");
 });
 
 device.on('message', function(topic, payload) 
