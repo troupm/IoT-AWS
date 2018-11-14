@@ -168,7 +168,9 @@ thingShadow.on('connect', function() {
             // update shadow
             thingShadow.update(ThingName, {
                 state: {
+                reported: {
                     light: 'on'
+                }
                 }
             })
             console.log("Thing Shadow Updated");
@@ -180,7 +182,9 @@ thingShadow.on('connect', function() {
             led.value(false);
             thingShadow.update(ThingName, {
                 state: {
+                reported: {
                     light: 'off'
+                }
                 }
             })
             console.log("Thing Shadow Updated");
@@ -209,38 +213,38 @@ device.on('message', function(topic, payload)
     //show the incoming message
     console.log(payload.light);
 
-    // if(topic == `aws/things/${ThingName}/shadow/update/delta`)
-    // {
-    //     if(payload.delta && payload.delta.light === 'on')
-    //     {
-    //         console.log("Swithing LED on...");
-    //         led.value(true);
-    //         // update shadow
-    //         thingShadow.update(ThingName, {
-    //             state: {
-    //             reported: {
-    //                 light: 'on'
-    //             }
-    //             }
-    //         })
-    //         console.log("Thing Shadow Updated");
-    //         console.log(thingShadow);
-    //     } 
-    //     else if (payload.delta && payload.delta.light == 'off')
-    //     {
-    //         console.log("Swithing LED off...");
-    //         led.value(false);
-    //         thingShadow.update(ThingName, {
-    //             state: {
-    //             reported: {
-    //                 light: 'off'
-    //             }
-    //             }
-    //         })
-    //         console.log("Thing Shadow Updated");
-    //         console.log(thingShadow);
-    //     }
-    // }
+    if(topic == `aws/things/${ThingName}/shadow/update/delta`)
+    {
+        if(payload.delta && payload.delta.light === 'on')
+        {
+            console.log("Swithing LED on...");
+            led.value(true);
+            // update shadow
+            thingShadow.update(ThingName, {
+                state: {
+                reported: {
+                    light: 'on'
+                }
+                }
+            })
+            console.log("Thing Shadow Updated");
+            console.log(thingShadow);
+        } 
+        else if (payload.delta && payload.delta.light == 'off')
+        {
+            console.log("Swithing LED off...");
+            led.value(false);
+            thingShadow.update(ThingName, {
+                state: {
+                reported: {
+                    light: 'off'
+                }
+                }
+            })
+            console.log("Thing Shadow Updated");
+            console.log(thingShadow);
+        }
+    }
 
     if(topic == 'LED')
     {
