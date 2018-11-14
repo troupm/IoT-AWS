@@ -138,15 +138,8 @@ thingShadow.on('connect', function() {
     //
            var ledState = {"state":{"desired":{"light":"on"}}};
     
-           clientTokenUpdate = thingShadow.update(ThingName, ledState  );
-    //
-    // The update method returns a clientToken; if non-null, this value will
-    // be sent in a 'status' event when the operation completes, allowing you
-    // to know whether or not the update was successful.  If the update method
-    // returns null, it's because another operation is currently in progress and
-    // you'll need to wait until it completes (or times out) before updating the 
-    // shadow.
-    //
+           var clientTokenUpdate = thingShadow.update(ThingName, ledState  );
+
            if (clientTokenUpdate === null)
            {
               console.log('update shadow failed, operation still in progress');
@@ -161,17 +154,11 @@ thingShadow.on('connect', function() {
     function(thingName, stat, clientToken, stateObject) {
        console.log('received '+stat+' on '+thingName+': '+
                    JSON.stringify(stateObject));
-    //
-    // These events report the status of update(), get(), and delete() 
-    // calls.  The clientToken value associated with the event will have
-    // the same value which was returned in an earlier call to get(),
-    // update(), or delete().  Use status events to keep track of the
-    // status of shadow operations.
-    //
     });
 
     thingShadow.on('delta', 
         function(thingName, stateObject) {
+        console.log('*** DELTA EVENT ***');
         console.log('received delta on '+thingName+': '+
                     JSON.stringify(stateObject));
         if(stateObject.state && stateObject.state.light === 'on')
@@ -181,9 +168,7 @@ thingShadow.on('connect', function() {
             // update shadow
             thingShadow.update(ThingName, {
                 state: {
-                reported: {
                     light: 'on'
-                }
                 }
             })
             console.log("Thing Shadow Updated");
@@ -195,9 +180,7 @@ thingShadow.on('connect', function() {
             led.value(false);
             thingShadow.update(ThingName, {
                 state: {
-                reported: {
                     light: 'off'
-                }
                 }
             })
             console.log("Thing Shadow Updated");
