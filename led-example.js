@@ -22,6 +22,16 @@ var onButton= GPIO.connect(17);
 onButton.mode('in');
 var offButton= GPIO.connect(18);
 offButton.mode('in');
+
+onButton.on('rise', function () {
+    console.log("ON button pressed-- publishing light:on message to topic LED with QOS=1");
+    console.log("TODO: Publish MQTT Message here");
+});
+
+offButton.on('rise', function () {
+    console.log("OFF button pressed-- publishing light:off message to topic LED with QOS=1");
+    console.log("TODO: Publish MQTT Message here");
+});
 */
 
 // LEDs
@@ -109,16 +119,6 @@ device.on('reconnect', function () {
 
 device.on('close', function () {
     console.log("MQTT closed");
-});
-
-onButton.on('rise', function () {
-    console.log("ON button pressed-- publishing light:on message to topic LED with QOS=1");
-    console.log("TODO: Publish MQTT Message here");
-});
-
-offButton.on('rise', function () {
-    console.log("OFF button pressed-- publishing light:off message to topic LED with QOS=1");
-    console.log("TODO: Publish MQTT Message here");
 });
 
 // SHADOW EVENTS
