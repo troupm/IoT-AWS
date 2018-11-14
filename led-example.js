@@ -16,32 +16,6 @@ var connected = false;
 console.log("Defining GPIO...");
 var GPIO = require("pi-pins");
 
-// BUTTONS
-/*
-var onButton= GPIO.connect(17);
-onButton.mode('in');
-var offButton= GPIO.connect(18);
-offButton.mode('in');
-
-onButton.on('rise', function () {
-    console.log("ON button pressed-- publishing light:on message to topic LED with QOS=1");
-    console.log("TODO: Publish MQTT Message here");
-});
-
-offButton.on('rise', function () {
-    console.log("OFF button pressed-- publishing light:off message to topic LED with QOS=1");
-    console.log("TODO: Publish MQTT Message here");
-});
-*/
-
-// LEDs
-console.log("Attaching LED Pin...");
-var led= GPIO.connect(12);
-console.log("Setting LED mode...");
-led.mode('out');
-console.log("Swithing LED off...");
-led.value(false);
-
 console.log("Defining deviceModule...");
 var deviceModule = awsIot.device;
 
@@ -74,6 +48,43 @@ const thingShadow = awsIot.thingShadow({
   host: ThingHost,
   region: Region, 
 });
+
+// BUTTONS
+var onButton= GPIO.connect(17);
+onButton.mode('in');
+var offButton= GPIO.connect(18);
+offButton.mode('in');
+
+onButton.on('rise', function () {
+    console.log("ON button pressed-- publishing light:on message to topic LED with QOS=1");
+    console.log("TODO: Publish MQTT Message here");
+    thingShadow.update(ThingName, {
+    state: {
+        desired: {
+            light: 'on'
+        }
+    }
+});
+
+offButton.on('rise', function () {
+    console.log("OFF button pressed-- publishing light:off message to topic LED with QOS=1");
+    console.log("TODO: Publish MQTT Message here");
+    thingShadow.update(ThingName, {
+        state: {
+            desired: {
+                light: 'off'
+            }
+        }
+    })
+});
+
+// LEDs
+console.log("Attaching LED Pin...");
+var led= GPIO.connect(12);
+console.log("Setting LED mode...");
+led.mode('out');
+console.log("Swithing LED off...");
+led.value(false);
 
 device.on('connect', function() {
     if(!connected)
@@ -210,7 +221,7 @@ device.on('message', function(topic, payload)
     {
         if(payload.light == 'on')
         {
-            console.log("Changing desired LED state to on...");
+            console.log("Changing LED states to on...");
             led.value(true);
             // update shadow
             thingShadow.update(ThingName, {
@@ -228,7 +239,7 @@ device.on('message', function(topic, payload)
         } 
         else 
         {
-            console.log("Changing desired LED state to off...");
+            console.log("Changing LED states to off...");
             led.value(false);
             thingShadow.update(ThingName, {
                 state: {
